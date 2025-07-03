@@ -123,7 +123,7 @@ namespace OpenManus.Tools.Web.Models
             for (int i = 0; i < Results.Count; i++)
             {
                 var result = Results[i];
-                
+
                 // Add title with position number
                 var title = !string.IsNullOrWhiteSpace(result.Title) ? result.Title : "No title";
                 resultText.Add($"\n{i + 1}. {title}");
@@ -140,7 +140,7 @@ namespace OpenManus.Tools.Web.Models
                 // Add content preview if available
                 if (!string.IsNullOrWhiteSpace(result.RawContent))
                 {
-                    var contentPreview = result.RawContent.Length > 1000 
+                    var contentPreview = result.RawContent.Length > 1000
                         ? result.RawContent.Substring(0, 1000) + "..."
                         : result.RawContent;
                     contentPreview = contentPreview.Replace("\n", " ").Trim();
