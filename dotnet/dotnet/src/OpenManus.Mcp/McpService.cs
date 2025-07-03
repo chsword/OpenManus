@@ -6,25 +6,43 @@ namespace OpenManus.Mcp
 {
     public class McpService : IMcpService
     {
-        private readonly ISemanticKernel _semanticKernel;
+        private readonly Kernel _kernel;
 
-        public McpService(ISemanticKernel semanticKernel)
+        public McpService(Kernel kernel)
         {
-            _semanticKernel = semanticKernel ?? throw new ArgumentNullException(nameof(semanticKernel));
+            _kernel = kernel ?? throw new ArgumentNullException(nameof(kernel));
         }
 
-        public async Task<string> ExecuteTaskAsync(string taskName, object parameters)
+        public async Task<string> ProcessRequestAsync(string request)
         {
-            if (string.IsNullOrWhiteSpace(taskName))
+            if (string.IsNullOrWhiteSpace(request))
             {
-                throw new ArgumentException("Task name cannot be null or empty.", nameof(taskName));
+                throw new ArgumentException("Request cannot be null or empty.", nameof(request));
             }
 
-            // Use the Semantic Kernel to execute the task
-            var result = await _semanticKernel.ExecuteAsync(taskName, parameters);
-            return result;
+            try
+            {
+                var result = await _kernel.InvokePromptAsync(request);
+                return result.ToString() ?? string.Empty;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Failed to process request: {ex.Message}", ex);
+            }
         }
 
-        // Additional MCP functionality can be implemented here
+        public async Task<string> GetStatusAsync()
+        {
+            // Placeholder implementation
+            await Task.CompletedTask;
+            return "MCP Service is running";
+        }
+
+        public async Task<string> ResetAsync()
+        {
+            // Placeholder implementation
+            await Task.CompletedTask;
+            return "MCP Service has been reset";
+        }
     }
 }

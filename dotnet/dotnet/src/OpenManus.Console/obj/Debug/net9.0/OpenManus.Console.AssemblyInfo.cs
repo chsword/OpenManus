@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OpenManus.Console")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+36713cda624b33aa055d5bcc4ee24d3d05578c29")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b1ff83f0107b29fd85dc630e30b97894cfd88ce4")]
 [assembly: System.Reflection.AssemblyProductAttribute("OpenManus.Console")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OpenManus.Console")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

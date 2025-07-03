@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "dgSpecHash": "2lf7sA0yucA=",
-  "success": false,
+  "dgSpecHash": "q4P7rhBmKAo=",
+  "success": true,
   "projectFilePath": "C:\\Github\\OpenManus\\dotnet\\dotnet\\src\\OpenManus.Tools\\OpenManus.Tools.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\chswo\\.nuget\\packages\\azure.ai.openai\\2.2.0-beta.4\\azure.ai.openai.2.2.0-beta.4.nupkg.sha512",
@@ -12,7 +12,7 @@
     "C:\\Users\\chswo\\.nuget\\packages\\microsoft.extensions.ai.abstractions\\9.6.0\\microsoft.extensions.ai.abstractions.9.6.0.nupkg.sha512",
     "C:\\Users\\chswo\\.nuget\\packages\\microsoft.extensions.ai.openai\\9.5.0-preview.1.25265.7\\microsoft.extensions.ai.openai.9.5.0-preview.1.25265.7.nupkg.sha512",
     "C:\\Users\\chswo\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\9.0.6\\microsoft.extensions.caching.abstractions.9.0.6.nupkg.sha512",
-    "C:\\Users\\chswo\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\8.0.0\\microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
+    "C:\\Users\\chswo\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\8.0.1\\microsoft.extensions.dependencyinjection.8.0.1.nupkg.sha512",
     "C:\\Users\\chswo\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.6\\microsoft.extensions.dependencyinjection.abstractions.9.0.6.nupkg.sha512",
     "C:\\Users\\chswo\\.nuget\\packages\\microsoft.extensions.logging\\8.0.0\\microsoft.extensions.logging.8.0.0.nupkg.sha512",
     "C:\\Users\\chswo\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\9.0.6\\microsoft.extensions.logging.abstractions.9.0.6.nupkg.sha512",
@@ -36,17 +36,5 @@
     "C:\\Users\\chswo\\.nuget\\packages\\system.threading.channels\\9.0.6\\system.threading.channels.9.0.6.nupkg.sha512",
     "C:\\Users\\chswo\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1605",
-      "level": "Error",
-      "message": "错误形式的警告: 检测到包降级: Microsoft.Extensions.DependencyInjection 从 8.0.1 降级到 8.0.0。直接从项目引用包以选择不同版本。 \r\n OpenManus.Tools -> Microsoft.SemanticKernel 1.59.0 -> Microsoft.SemanticKernel.Core 1.59.0 -> Microsoft.Extensions.DependencyInjection (>= 8.0.1) \r\n OpenManus.Tools -> Microsoft.Extensions.DependencyInjection (>= 8.0.0)",
-      "projectPath": "C:\\Github\\OpenManus\\dotnet\\dotnet\\src\\OpenManus.Tools\\OpenManus.Tools.csproj",
-      "filePath": "C:\\Github\\OpenManus\\dotnet\\dotnet\\src\\OpenManus.Tools\\OpenManus.Tools.csproj",
-      "libraryId": "Microsoft.Extensions.DependencyInjection",
-      "targetGraphs": [
-        "net9.0"
-      ]
-    }
-  ]
+  "logs": []
 }

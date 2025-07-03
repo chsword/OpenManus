@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.SemanticKernel;
 
@@ -6,11 +7,11 @@ namespace OpenManus.Tools
 {
     public class ToolService : IToolService
     {
-        private readonly ISemanticKernel _semanticKernel;
+        private readonly Kernel _kernel;
 
-        public ToolService(ISemanticKernel semanticKernel)
+        public ToolService(Kernel kernel)
         {
-            _semanticKernel = semanticKernel ?? throw new ArgumentNullException(nameof(semanticKernel));
+            _kernel = kernel ?? throw new ArgumentNullException(nameof(kernel));
         }
 
         public async Task<string> ExecuteToolAsync(string toolName, object parameters)
@@ -20,25 +21,36 @@ namespace OpenManus.Tools
                 throw new ArgumentException("Tool name cannot be null or empty.", nameof(toolName));
             }
 
-            // Assuming the Semantic Kernel has a method to execute tools
-            var result = await _semanticKernel.ExecuteAsync(toolName, parameters);
-            return result;
+            try
+            {
+                // In the new Semantic Kernel, tools are typically invoked through plugins
+                // This is a placeholder implementation
+                var result = await _kernel.InvokePromptAsync($"Execute tool {toolName} with parameters: {parameters}");
+                return result.ToString() ?? string.Empty;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Failed to execute tool {toolName}: {ex.Message}", ex);
+            }
         }
 
-        public void RegisterTool(string toolName, Func<object, Task<string>> toolFunction)
+        public async Task<string> GetToolInfoAsync(string toolName)
         {
             if (string.IsNullOrEmpty(toolName))
             {
                 throw new ArgumentException("Tool name cannot be null or empty.", nameof(toolName));
             }
 
-            if (toolFunction == null)
-            {
-                throw new ArgumentNullException(nameof(toolFunction));
-            }
+            // Placeholder implementation
+            await Task.CompletedTask;
+            return $"Information for tool: {toolName}";
+        }
 
-            // Assuming the Semantic Kernel has a method to register tools
-            _semanticKernel.RegisterTool(toolName, toolFunction);
+        public async Task<string[]> ListAvailableToolsAsync()
+        {
+            // Placeholder implementation
+            await Task.CompletedTask;
+            return new[] { "Tool1", "Tool2", "Tool3" };
         }
     }
 }

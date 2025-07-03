@@ -1,23 +1,61 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.AI;
-using Microsoft.SemanticKernel.Orchestration;
 
 namespace OpenManus.Agent
 {
     public class AgentService : IAgent
     {
-        private readonly ISemanticKernel _kernel;
+        private readonly Kernel _kernel;
+        private bool _isInitialized;
 
-        public AgentService(ISemanticKernel kernel)
+        public AgentService(Kernel kernel)
         {
             _kernel = kernel ?? throw new ArgumentNullException(nameof(kernel));
+            _isInitialized = false;
         }
 
-        public async Task<string> ExecuteTaskAsync(string taskDescription)
+        public void Initialize()
         {
-            if (string.IsNullOrWhiteSpace(taskDescription))
+            // Initialize the agent
+            _isInitialized = true;
+        }
+
+        public async Task<string> ExecuteTaskAsync(string input)
+        {
+            if (!_isInitialized)
+            {
+                throw new InvalidOperationException("Agent must be initialized before executing tasks.");
+            }
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                throw new ArgumentException("Input cannot be null or empty.", nameof(input));
+            }
+
+            try
+            {
+                var result = await _kernel.InvokePromptAsync(input);
+                return result.ToString() ?? string.Empty;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Failed to execute task: {ex.Message}", ex);
+            }
+        }
+
+        public string GetStatus()
+        {
+            return _isInitialized ? "Agent is running" : "Agent is not initialized";
+        }
+
+        public void Shutdown()
+        {
+            // Graceful shutdown
+            _isInitialized = false;
+        }
+    }
+}
             {
                 throw new ArgumentException("Task description cannot be null or empty.", nameof(taskDescription));
             }

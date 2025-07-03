@@ -1,28 +1,52 @@
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.SemanticKernel;
 
 namespace OpenManus.Prompt
 {
     public class PromptService : IPromptService
     {
-        private readonly ISemanticKernel _semanticKernel;
+        private readonly Kernel _kernel;
+        private readonly List<string> _availablePrompts;
 
-        public PromptService(ISemanticKernel semanticKernel)
+        public PromptService(Kernel kernel)
         {
-            _semanticKernel = semanticKernel ?? throw new ArgumentNullException(nameof(semanticKernel));
+            _kernel = kernel ?? throw new ArgumentNullException(nameof(kernel));
+            _availablePrompts = new List<string>
+            {
+                "Default Prompt",
+                "Chat Prompt",
+                "Analysis Prompt",
+                "Summary Prompt"
+            };
         }
 
-        public async Task<string> GeneratePromptAsync(string input)
+        public string GeneratePrompt(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
             {
                 throw new ArgumentException("Input cannot be null or empty.", nameof(input));
             }
 
-            // Use the Semantic Kernel to generate a prompt based on the input
-            var prompt = await _semanticKernel.GenerateAsync(input);
-            return prompt;
+            // Generate a simple prompt based on the input
+            return $"Based on the following input, please provide a helpful response: {input}";
+        }
+
+        public bool ValidatePrompt(string prompt)
+        {
+            if (string.IsNullOrWhiteSpace(prompt))
+            {
+                return false;
+            }
+
+            // Basic validation - check if prompt is not too short or too long
+            return prompt.Length >= 10 && prompt.Length <= 10000;
+        }
+
+        public IEnumerable<string> GetAvailablePrompts()
+        {
+            return _availablePrompts.AsReadOnly();
         }
     }
 }

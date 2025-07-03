@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 // IPromptService interface defines the contract for prompt services in the OpenManus application.
 namespace OpenManus.Prompt
 {

@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 // IAgent interface defines the methods that the agent service should implement.
 namespace OpenManus.Agent
 {

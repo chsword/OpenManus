@@ -1,15 +1,14 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.AI;
 
 namespace OpenManus.Llm
 {
     public class BedrockService : ILlmService
     {
-        private readonly IKernel _kernel;
+        private readonly Kernel _kernel;
 
-        public BedrockService(IKernel kernel)
+        public BedrockService(Kernel kernel)
         {
             _kernel = kernel ?? throw new ArgumentNullException(nameof(kernel));
         }
@@ -21,15 +20,37 @@ namespace OpenManus.Llm
                 throw new ArgumentException("Input cannot be null or empty.", nameof(input));
             }
 
-            var request = new AIRequest
+            try
             {
-                Prompt = input,
-                MaxTokens = 150,
-                Temperature = 0.7
-            };
+                var result = await _kernel.InvokePromptAsync(input);
+                return result.ToString() ?? string.Empty;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Failed to generate response: {ex.Message}", ex);
+            }
+        }
 
-            var response = await _kernel.InvokeAsync(request);
-            return response;
+        public async Task<string> SummarizeTextAsync(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                throw new ArgumentException("Text cannot be null or empty.", nameof(text));
+            }
+
+            var prompt = $"Please summarize the following text:\n\n{text}";
+            return await GenerateResponseAsync(prompt);
+        }
+
+        public async Task<string> AnalyzeSentimentAsync(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                throw new ArgumentException("Text cannot be null or empty.", nameof(text));
+            }
+
+            var prompt = $"Please analyze the sentiment of the following text and respond with either 'Positive', 'Negative', or 'Neutral':\n\n{text}";
+            return await GenerateResponseAsync(prompt);
         }
     }
 }
