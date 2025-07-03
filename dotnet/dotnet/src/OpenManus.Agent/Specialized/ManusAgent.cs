@@ -1,5 +1,7 @@
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using OpenManus.Agent.Specialized;
@@ -8,6 +10,7 @@ using OpenManus.Tools.Core;
 using OpenManus.Tools.FileOperations;
 using OpenManus.Tools.FileSystem;
 using OpenManus.Tools.System;
+using OpenManus.Tools.Web;
 
 namespace OpenManus.Agent.Specialized
 {
@@ -47,8 +50,11 @@ Current working directory: {0}";
             IFileOperator fileOperator,
             string? workingDirectory = null,
             string? name = null,
-            string? description = null)
-            : base(kernel, logger, CreateToolCollection(fileOperator, logger), name ?? "Manus",
+            string? description = null,
+            HttpClient? httpClient = null,
+            IConfiguration? configuration = null,
+            ILoggerFactory? loggerFactory = null)
+            : base(kernel, logger, CreateToolCollection(fileOperator, logger, httpClient, configuration, loggerFactory), name ?? "Manus",
                   description ?? "A versatile agent that can solve various tasks using multiple tools")
         {
             // Configure the agent
@@ -78,9 +84,34 @@ Current working directory: {0}";
         }
 
         /// <summary>
+        /// Factory method to create ManusAgent with web search capabilities.
+        /// </summary>
+        public static ManusAgent CreateWithWebSearch(
+            Kernel kernel,
+            ILogger<BaseAgent> logger,
+            HttpClient httpClient,
+            IConfiguration configuration,
+            ILoggerFactory loggerFactory,
+            IFileOperator? fileOperator = null,
+            string? workingDirectory = null)
+        {
+            // Create default file operator if none provided
+            fileOperator ??= new LocalFileOperator(
+                Microsoft.Extensions.Logging.Abstractions.NullLogger<LocalFileOperator>.Instance);
+
+            return new ManusAgent(kernel, logger, fileOperator, workingDirectory, null, null, 
+                httpClient, configuration, loggerFactory);
+        }
+
+        /// <summary>
         /// Create and configure the tool collection for Manus agent.
         /// </summary>
-        private static ToolCollection CreateToolCollection(IFileOperator fileOperator, ILogger logger)
+        private static ToolCollection CreateToolCollection(
+            IFileOperator fileOperator, 
+            ILogger logger,
+            HttpClient? httpClient = null,
+            IConfiguration? configuration = null,
+            ILoggerFactory? loggerFactory = null)
         {
             var toolLogger = logger as ILogger<BaseTool> ??
                 Microsoft.Extensions.Logging.Abstractions.NullLogger<BaseTool>.Instance;
@@ -95,6 +126,13 @@ Current working directory: {0}";
                 new AskHumanTool(toolLogger),
                 new TerminateTool(toolLogger)
             );
+
+            // Add web search tool if HTTP client is available
+            if (httpClient != null && configuration != null && loggerFactory != null)
+            {
+                var webSearchLogger = loggerFactory.CreateLogger<WebSearchTool>();
+                toolCollection.AddTool(new WebSearchTool(webSearchLogger, httpClient, loggerFactory, configuration));
+            }
 
             return toolCollection;
         }

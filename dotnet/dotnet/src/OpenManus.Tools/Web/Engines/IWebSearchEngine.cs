@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using OpenManus.Tools.Web.Models;
 
 namespace OpenManus.Tools.Web.Engines
 {
@@ -23,15 +24,5 @@ namespace OpenManus.Tools.Web.Engines
         /// <param name="country">Country code (e.g., "us")</param>
         /// <returns>List of search items</returns>
         Task<List<SearchItem>> PerformSearchAsync(string query, int numResults = 10, string language = "en", string country = "us");
-    }
-
-    /// <summary>
-    /// Simple search item model for internal use.
-    /// </summary>
-    public class SearchItem
-    {
-        public string Title { get; set; } = string.Empty;
-        public string Url { get; set; } = string.Empty;
-        public string? Description { get; set; }
     }
 }
