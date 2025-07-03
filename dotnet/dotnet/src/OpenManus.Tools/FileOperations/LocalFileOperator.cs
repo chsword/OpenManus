@@ -43,7 +43,7 @@ namespace OpenManus.Tools.FileOperations
             try
             {
                 _logger.LogDebug("Writing {Length} characters to file: {Path}", content.Length, path);
-                
+
                 // Ensure directory exists
                 var directory = Path.GetDirectoryName(path);
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
@@ -102,7 +102,7 @@ namespace OpenManus.Tools.FileOperations
                 _logger.LogDebug("Running command: {Command}", command);
 
                 using var process = new Process();
-                
+
                 // Configure process for PowerShell on Windows
                 if (Environment.OSVersion.Platform == PlatformID.Win32NT)
                 {
@@ -140,7 +140,7 @@ namespace OpenManus.Tools.FileOperations
                 process.BeginErrorReadLine();
 
                 var completed = await process.WaitForExitAsync(TimeSpan.FromSeconds(timeoutSeconds));
-                
+
                 if (!completed)
                 {
                     _logger.LogWarning("Command timed out after {Timeout}s: {Command}", timeoutSeconds, command);
@@ -160,7 +160,7 @@ namespace OpenManus.Tools.FileOperations
                 var stderr = stderrBuilder.ToString().TrimEnd();
 
                 _logger.LogDebug("Command completed with exit code {ExitCode}: {Command}", exitCode, command);
-                
+
                 return (exitCode, stdout, stderr);
             }
             catch (Exception ex) when (!(ex is TimeoutException))
@@ -182,7 +182,7 @@ namespace OpenManus.Tools.FileOperations
             var tcs = new TaskCompletionSource<bool>();
 
             void ProcessExited(object? sender, EventArgs e) => tcs.TrySetResult(true);
-            
+
             process.EnableRaisingEvents = true;
             process.Exited += ProcessExited;
 

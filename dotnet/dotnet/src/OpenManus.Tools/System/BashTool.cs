@@ -19,7 +19,7 @@ namespace OpenManus.Tools.System
         public BashTool(IFileOperator fileOperator, ILogger<BaseTool> logger) : base(logger)
         {
             _fileOperator = fileOperator ?? throw new ArgumentNullException(nameof(fileOperator));
-            
+
             Parameters = new Dictionary<string, object>
             {
                 ["type"] = "object",
@@ -45,7 +45,7 @@ namespace OpenManus.Tools.System
         public override string Name => "bash";
 
         /// <inheritdoc />
-        public override string Description => 
+        public override string Description =>
             "Execute shell commands in PowerShell (Windows) or Bash (Unix-like systems). " +
             "Use this tool to run system commands, scripts, or interact with the operating system. " +
             "Commands are executed in the current working directory with appropriate environment variables.";
@@ -113,17 +113,17 @@ namespace OpenManus.Tools.System
         {
             var result = $"Command: {command}\n";
             result += $"Exit Code: {exitCode}\n";
-            
+
             if (!string.IsNullOrWhiteSpace(stdout))
             {
                 result += $"\nOutput:\n{stdout.TrimEnd()}\n";
             }
-            
+
             if (!string.IsNullOrWhiteSpace(stderr))
             {
                 result += $"\nError Output:\n{stderr.TrimEnd()}\n";
             }
-            
+
             if (string.IsNullOrWhiteSpace(stdout) && string.IsNullOrWhiteSpace(stderr))
             {
                 result += "\n(No output)\n";

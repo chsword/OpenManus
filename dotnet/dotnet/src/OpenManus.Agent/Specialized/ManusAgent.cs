@@ -48,7 +48,7 @@ Current working directory: {0}";
             string? workingDirectory = null,
             string? name = null,
             string? description = null)
-            : base(kernel, logger, CreateToolCollection(fileOperator, logger), name ?? "Manus", 
+            : base(kernel, logger, CreateToolCollection(fileOperator, logger), name ?? "Manus",
                   description ?? "A versatile agent that can solve various tasks using multiple tools")
         {
             // Configure the agent
@@ -57,7 +57,7 @@ Current working directory: {0}";
             MaxSteps = 20;
             MaxObserve = 10000;
 
-            _logger.LogInformation("🚀 Manus agent initialized with working directory: {WorkingDirectory}", 
+            _logger.LogInformation("🚀 Manus agent initialized with working directory: {WorkingDirectory}",
                 workingDirectory ?? Environment.CurrentDirectory);
         }
 
@@ -82,7 +82,7 @@ Current working directory: {0}";
         /// </summary>
         private static ToolCollection CreateToolCollection(IFileOperator fileOperator, ILogger logger)
         {
-            var toolLogger = logger as ILogger<BaseTool> ?? 
+            var toolLogger = logger as ILogger<BaseTool> ??
                 Microsoft.Extensions.Logging.Abstractions.NullLogger<BaseTool>.Instance;
 
             var toolCollection = new ToolCollection(
@@ -105,7 +105,7 @@ Current working directory: {0}";
         public override async Task<string> RunAsync(string? request = null)
         {
             _logger.LogInformation("🎯 Manus agent starting task: {Request}", request ?? "General assistance");
-            
+
             try
             {
                 var result = await base.RunAsync(request);

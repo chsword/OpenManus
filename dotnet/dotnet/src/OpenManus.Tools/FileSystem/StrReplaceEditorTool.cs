@@ -30,12 +30,12 @@ namespace OpenManus.Tools.FileSystem
     {
         private const int SnippetLines = 4;
         private const int MaxResponseLength = 16000;
-        private const string TruncatedMessage = 
+        private const string TruncatedMessage =
             "<response clipped><NOTE>To save on context only part of this file has been shown to you. " +
             "You should retry this tool after you have searched inside the file with `grep -n` " +
             "in order to find the line numbers of what you are looking for.</NOTE>";
 
-        private const string ToolDescription = 
+        private const string ToolDescription =
             "Custom editing tool for viewing, creating and editing files\n" +
             "* State is persistent across command calls and discussions with the user\n" +
             "* If `path` is a file, `view` displays the result of applying `cat -n`. If `path` is a directory, `view` lists non-hidden files and directories up to 2 levels deep\n" +
@@ -54,7 +54,7 @@ namespace OpenManus.Tools.FileSystem
         {
             _fileOperator = fileOperator ?? throw new ArgumentNullException(nameof(fileOperator));
             _fileHistory = new Dictionary<string, List<string>>();
-            
+
             Parameters = new Dictionary<string, object>
             {
                 ["type"] = "object",
@@ -115,7 +115,7 @@ namespace OpenManus.Tools.FileSystem
 
             var commandStr = GetParameter<string>(parameters, "command");
             var path = GetParameter<string>(parameters, "path");
-            
+
             if (!Enum.TryParse<EditorCommand>(commandStr, true, out var command))
             {
                 throw new ArgumentException($"Unrecognized command {commandStr}. The allowed commands are: view, create, str_replace, insert, undo_edit");
@@ -210,7 +210,7 @@ namespace OpenManus.Tools.FileSystem
             {
                 // Use PowerShell command to list directory contents (Windows equivalent of find)
                 var command = $"Get-ChildItem -Path '{path}' -Recurse -Depth 1 | Where-Object {{ !$_.Name.StartsWith('.') }} | ForEach-Object {{ $_.FullName }}";
-                
+
                 var (exitCode, stdout, stderr) = await _fileOperator.RunCommandAsync(command);
 
                 if (!string.IsNullOrEmpty(stderr))
@@ -289,7 +289,7 @@ namespace OpenManus.Tools.FileSystem
             }
 
             await _fileOperator.WriteFileAsync(path, fileText);
-            
+
             // Save to history
             if (!_fileHistory.ContainsKey(path))
             {
@@ -419,7 +419,7 @@ namespace OpenManus.Tools.FileSystem
             var snippet = string.Join("\n", snippetLines);
 
             await _fileOperator.WriteFileAsync(path, newFileText);
-            
+
             // Save to history
             if (!_fileHistory.ContainsKey(path))
             {
@@ -447,7 +447,7 @@ namespace OpenManus.Tools.FileSystem
 
             var oldText = _fileHistory[path].Last();
             _fileHistory[path].RemoveAt(_fileHistory[path].Count - 1);
-            
+
             await _fileOperator.WriteFileAsync(path, oldText);
 
             return $"Last edit to {path} undone successfully. {MakeOutput(oldText, path)}";
@@ -459,7 +459,7 @@ namespace OpenManus.Tools.FileSystem
         private string MakeOutput(string fileContent, string fileDescriptor, int initLine = 1, bool expandTabs = true)
         {
             fileContent = MaybeTruncate(fileContent);
-            
+
             if (expandTabs)
             {
                 fileContent = fileContent.Replace("\t", "    ");

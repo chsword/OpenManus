@@ -39,7 +39,7 @@ namespace OpenManus.Tools.Core
         protected override async Task<ToolResult> ExecuteCoreAsync(Dictionary<string, object>? parameters)
         {
             var question = GetParameter(parameters, "question", string.Empty);
-            
+
             if (string.IsNullOrWhiteSpace(question))
             {
                 return ToolResult.Failure("Question parameter is required and cannot be empty");
@@ -52,17 +52,17 @@ namespace OpenManus.Tools.Core
                 // Display the question to the user
                 Console.WriteLine($"\n🤖 Agent Question: {question}");
                 Console.Write("👤 Your Response: ");
-                
+
                 // Wait for user input
                 var response = await Task.Run(() => Console.ReadLine());
-                
+
                 if (string.IsNullOrWhiteSpace(response))
                 {
                     response = "(No response provided)";
                 }
 
                 _logger.LogInformation("👤 Human responded: {Response}", response);
-                
+
                 return ToolResult.Success($"Human response: {response}");
             }
             catch (Exception ex)
