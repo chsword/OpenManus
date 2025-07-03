@@ -17,7 +17,7 @@ namespace OpenManus.Tools.Core
         public CreateChatCompletionTool(Kernel kernel, ILogger<BaseTool> logger) : base(logger)
         {
             _kernel = kernel ?? throw new System.ArgumentNullException(nameof(kernel));
-            
+
             Parameters = new Dictionary<string, object>
             {
                 ["type"] = "object",
@@ -68,16 +68,16 @@ namespace OpenManus.Tools.Core
             {
                 // Check if we have a simple prompt
                 var prompt = GetParameter(parameters, "prompt", string.Empty);
-                
+
                 if (!string.IsNullOrEmpty(prompt))
                 {
                     _logger.LogDebug("Creating chat completion with prompt: {Prompt}", prompt);
-                    
+
                     var result = await _kernel.InvokePromptAsync(prompt);
                     var response = result.ToString();
-                    
+
                     _logger.LogDebug("Chat completion result: {Response}", response);
-                    
+
                     return ToolResult.Success(response);
                 }
 
@@ -85,7 +85,7 @@ namespace OpenManus.Tools.Core
                 // For now, we'll use a simple implementation
                 // In a full implementation, this would parse the messages array
                 // and construct appropriate chat history
-                
+
                 _logger.LogWarning("Messages format not yet fully implemented, using basic prompt mode");
                 return ToolResult.Failure("Messages format not yet implemented. Please use 'prompt' parameter.");
             }

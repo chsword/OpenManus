@@ -63,7 +63,7 @@ namespace OpenManus.Tools
             _tools.Add(tool);
             _toolMap[tool.Name] = tool;
             _logger.LogDebug("Added tool {ToolName} to collection", tool.Name);
-            
+
             return this;
         }
 
@@ -114,7 +114,7 @@ namespace OpenManus.Tools
             _tools.Remove(tool);
             _toolMap.Remove(name);
             _logger.LogDebug("Removed tool {ToolName} from collection", name);
-            
+
             return true;
         }
 
@@ -154,7 +154,7 @@ namespace OpenManus.Tools
         public async Task<List<ToolResult>> ExecuteAllAsync()
         {
             var results = new List<ToolResult>();
-            
+
             foreach (var tool in _tools)
             {
                 try
@@ -190,7 +190,7 @@ namespace OpenManus.Tools
         public async Task CleanupAllAsync()
         {
             _logger.LogInformation("Cleaning up all tools in collection");
-            
+
             var tasks = _tools.Select(async tool =>
             {
                 try

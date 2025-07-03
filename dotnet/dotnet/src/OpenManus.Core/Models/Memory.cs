@@ -139,9 +139,9 @@ namespace OpenManus.Core.Models
                 return new List<Message>();
 
             var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-            
-            return _messages.Where(m => 
-                !string.IsNullOrEmpty(m.Content) && 
+
+            return _messages.Where(m =>
+                !string.IsNullOrEmpty(m.Content) &&
                 m.Content.Contains(searchContent, comparison)
             ).ToList();
         }

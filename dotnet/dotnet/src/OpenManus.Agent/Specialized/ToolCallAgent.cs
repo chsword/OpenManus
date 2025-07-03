@@ -19,7 +19,7 @@ namespace OpenManus.Agent.Specialized
     /// </summary>
     public class ToolCallAgent : ReActAgent
     {
-        private const string DefaultSystemPrompt = @"You are a helpful assistant that can use tools to accomplish tasks. 
+        private const string DefaultSystemPrompt = @"You are a helpful assistant that can use tools to accomplish tasks.
 When you need to use tools, think carefully about which tools are appropriate and how to use them effectively.
 Always provide clear explanations of your actions and reasoning.";
 
@@ -58,13 +58,13 @@ Always provide clear explanations of your actions and reasoning.";
             // Add default tools if not already present
             if (!_toolCollection.HasTool("terminate"))
             {
-                _toolCollection.AddTool(new TerminateTool(logger as ILogger<BaseTool> ?? 
+                _toolCollection.AddTool(new TerminateTool(logger as ILogger<BaseTool> ??
                     Microsoft.Extensions.Logging.Abstractions.NullLogger<BaseTool>.Instance));
             }
 
             if (!_toolCollection.HasTool("create_chat_completion"))
             {
-                _toolCollection.AddTool(new CreateChatCompletionTool(kernel, logger as ILogger<BaseTool> ?? 
+                _toolCollection.AddTool(new CreateChatCompletionTool(kernel, logger as ILogger<BaseTool> ??
                     Microsoft.Extensions.Logging.Abstractions.NullLogger<BaseTool>.Instance));
             }
         }
@@ -90,7 +90,7 @@ Always provide clear explanations of your actions and reasoning.";
 
                 // Prepare chat history
                 var chatHistory = new ChatHistory();
-                
+
                 // Add system message
                 if (!string.IsNullOrEmpty(SystemPrompt))
                 {
@@ -120,7 +120,7 @@ Always provide clear explanations of your actions and reasoning.";
 
                 // Get available tools for function calling
                 var tools = _toolCollection.ToParameters();
-                var kernelFunctions = tools.Select(tool => 
+                var kernelFunctions = tools.Select(tool =>
                 {
                     var functionData = tool["function"] as Dictionary<string, object>;
                     return KernelFunctionFactory.CreateFromPrompt(
@@ -168,7 +168,7 @@ Always provide clear explanations of your actions and reasoning.";
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error in ToolCallAgent thinking phase");
-                
+
                 var errorMessage = new Message
                 {
                     Role = Role.Assistant,
@@ -176,7 +176,7 @@ Always provide clear explanations of your actions and reasoning.";
                     CreatedAt = DateTime.UtcNow
                 };
                 Memory.AddMessage(errorMessage);
-                
+
                 return false;
             }
         }
@@ -205,13 +205,13 @@ Always provide clear explanations of your actions and reasoning.";
                     _logger.LogInformation("🔧 Activating tool: '{ToolName}'...", toolCall.Function?.Name);
 
                     var result = await ExecuteToolCallAsync(toolCall);
-                    
+
                     if (MaxObserve.HasValue && result.Length > MaxObserve.Value)
                     {
                         result = result.Substring(0, MaxObserve.Value);
                     }
 
-                    _logger.LogInformation("🎯 Tool '{ToolName}' completed its mission! Result: {Result}", 
+                    _logger.LogInformation("🎯 Tool '{ToolName}' completed its mission! Result: {Result}",
                         toolCall.Function?.Name, result);
 
                     // Add tool result to memory
@@ -279,7 +279,7 @@ Always provide clear explanations of your actions and reasoning.";
             catch (JsonException ex)
             {
                 var error = $"Error parsing arguments for {toolName}: Invalid JSON format";
-                _logger.LogError(ex, "📝 Invalid JSON arguments for '{ToolName}', arguments: {Arguments}", 
+                _logger.LogError(ex, "📝 Invalid JSON arguments for '{ToolName}', arguments: {Arguments}",
                     toolName, toolCall.Function.Arguments);
                 return $"Error: {error}";
             }
@@ -321,7 +321,7 @@ Always provide clear explanations of your actions and reasoning.";
         /// </summary>
         private bool IsSpecialTool(string toolName)
         {
-            return _specialToolNames.Any(name => 
+            return _specialToolNames.Any(name =>
                 string.Equals(name, toolName, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -332,7 +332,7 @@ Always provide clear explanations of your actions and reasoning.";
         {
             // This is a simplified implementation
             // In a real implementation, this would parse function calls from the LLM response
-            
+
             // For now, we'll create mock tool calls based on content analysis
             if (content.ToLowerInvariant().Contains("terminate") || content.ToLowerInvariant().Contains("finish"))
             {
@@ -357,7 +357,7 @@ Always provide clear explanations of your actions and reasoning.";
         private static Dictionary<string, object> JsonElementToDictionary(JsonElement element)
         {
             var dictionary = new Dictionary<string, object>();
-            
+
             foreach (var property in element.EnumerateObject())
             {
                 dictionary[property.Name] = property.Value.ValueKind switch
@@ -373,7 +373,7 @@ Always provide clear explanations of your actions and reasoning.";
                     _ => property.Value.ToString() ?? string.Empty
                 } ?? string.Empty;
             }
-            
+
             return dictionary;
         }
 
@@ -383,7 +383,7 @@ Always provide clear explanations of your actions and reasoning.";
         public async Task CleanupAsync()
         {
             _logger.LogInformation("🧹 Cleaning up resources for ToolCallAgent '{AgentName}'...", Name);
-            
+
             try
             {
                 await _toolCollection.CleanupAllAsync();

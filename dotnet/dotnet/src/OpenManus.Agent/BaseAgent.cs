@@ -87,7 +87,7 @@ namespace OpenManus.Agent
             _logger.LogInformation("Initializing agent: {AgentName}", Name);
             State = AgentState.Idle;
             CurrentStep = 0;
-            
+
             // Add system prompt if provided
             if (!string.IsNullOrEmpty(SystemPrompt))
             {
@@ -126,17 +126,17 @@ namespace OpenManus.Agent
             }
 
             var results = new List<string>();
-            
+
             try
             {
                 await using var stateContext = CreateStateContext(AgentState.Running);
-                
+
                 while (CurrentStep < MaxSteps && State != AgentState.Finished)
                 {
                     CurrentStep++;
-                    _logger.LogInformation("Executing step {CurrentStep}/{MaxSteps} for agent {AgentName}", 
+                    _logger.LogInformation("Executing step {CurrentStep}/{MaxSteps} for agent {AgentName}",
                         CurrentStep, MaxSteps, Name);
-                    
+
                     var stepResult = await StepAsync();
 
                     // Check for stuck state
@@ -200,11 +200,11 @@ namespace OpenManus.Agent
         /// </summary>
         public virtual void HandleStuckState()
         {
-            const string stuckPrompt = 
+            const string stuckPrompt =
                 "Observed duplicate responses. Consider new strategies and avoid repeating ineffective paths already attempted.";
-            
+
             NextStepPrompt = $"{stuckPrompt}\n{NextStepPrompt}";
-            
+
             _logger.LogWarning("Agent {AgentName} detected stuck state. Added prompt: {StuckPrompt}", Name, stuckPrompt);
         }
 

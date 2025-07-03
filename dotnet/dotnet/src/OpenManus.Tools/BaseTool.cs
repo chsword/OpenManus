@@ -43,9 +43,9 @@ namespace OpenManus.Tools
             try
             {
                 _logger.LogDebug("Executing tool {ToolName} with parameters: {@Parameters}", Name, parameters);
-                
+
                 var result = await ExecuteCoreAsync(parameters);
-                
+
                 _logger.LogDebug("Tool {ToolName} executed successfully", Name);
                 return result;
             }

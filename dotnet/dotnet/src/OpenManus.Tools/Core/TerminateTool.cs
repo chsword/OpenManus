@@ -38,9 +38,9 @@ namespace OpenManus.Tools.Core
         protected override Task<ToolResult> ExecuteCoreAsync(Dictionary<string, object>? parameters)
         {
             var reason = GetParameter(parameters, "reason", "Task completed successfully");
-            
+
             _logger.LogInformation("Agent execution terminated. Reason: {Reason}", reason);
-            
+
             return Task.FromResult(ToolResult.Success($"Execution terminated: {reason}"));
         }
     }

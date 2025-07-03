@@ -30,7 +30,7 @@ namespace OpenManus.Core.Models
         /// <summary>
         /// Indicates if the tool result has any meaningful content.
         /// </summary>
-        public bool HasContent => Output != null || !string.IsNullOrEmpty(Error) || 
+        public bool HasContent => Output != null || !string.IsNullOrEmpty(Error) ||
                                  !string.IsNullOrEmpty(Base64Image) || !string.IsNullOrEmpty(System);
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace OpenManus.Core.Models
         /// <summary>
         /// Creates a copy of this ToolResult with specified fields replaced.
         /// </summary>
-        public ToolResult Replace(object? output = null, string? error = null, 
+        public ToolResult Replace(object? output = null, string? error = null,
                                  string? base64Image = null, string? system = null)
         {
             return new ToolResult
