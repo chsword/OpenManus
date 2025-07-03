@@ -1,6 +1,4 @@
 using System;
-using System.CommandLine;
-using System.CommandLine.Invocation;
 using OpenManus.Mcp;
 
 namespace OpenManus.Console.Commands
@@ -14,33 +12,17 @@ namespace OpenManus.Console.Commands
             _mcpService = mcpService;
         }
 
-        public Command CreateCommand()
+        public void ExecuteRun()
         {
-            var command = new Command("mcp", "Handles MCP related commands");
-
-            command.AddCommand(CreateRunCommand());
-
-            return command;
-        }
-
-        private Command CreateRunCommand()
-        {
-            var runCommand = new Command("run", "Runs the MCP process");
-
-            runCommand.Handler = CommandHandler.Create(() =>
+            try
             {
-                try
-                {
-                    _mcpService.Run();
-                    Console.WriteLine("MCP process started successfully.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error starting MCP process: {ex.Message}");
-                }
-            });
-
-            return runCommand;
+                // _mcpService.Run();
+                System.Console.WriteLine("MCP process started successfully.");
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine($"Error starting MCP process: {ex.Message}");
+            }
         }
     }
 }
