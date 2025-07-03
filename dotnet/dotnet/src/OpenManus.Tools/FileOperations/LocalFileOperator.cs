@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -178,7 +179,7 @@ namespace OpenManus.Tools.FileOperations
     {
         public static async Task<bool> WaitForExitAsync(this Process process, TimeSpan timeout)
         {
-            using var cts = new System.Threading.CancellationTokenSource(timeout);
+            using var cts = new CancellationTokenSource(timeout);
             var tcs = new TaskCompletionSource<bool>();
 
             void ProcessExited(object? sender, EventArgs e) => tcs.TrySetResult(true);

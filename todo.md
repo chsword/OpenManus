@@ -58,7 +58,7 @@
 
 ### 1.2 专业化 Agent 实现
 
-- [ ] 实现 `ManusAgent` - 通用多功能 Agent
+- [x] 实现 `ManusAgent` - 通用多功能 Agent
 - [ ] 实现 `DataAnalysisAgent` - 数据分析专用 Agent
 - [ ] 实现 `BrowserAgent` - 浏览器操作专用 Agent
 - [ ] 实现 `SWEAgent` - 软件工程 Agent
@@ -97,16 +97,16 @@
 ### 2.4 代码执行工具
 
 - [ ] 实现 `PythonExecuteTool` 类
-- [ ] 实现 `BashTool` 类（命令行执行）
+- [x] 实现 `BashTool` 类（命令行执行）
 - [ ] 实现代码执行沙箱环境
 - [ ] 支持执行结果捕获和错误处理
 
 ### 2.5 文件操作工具
 
-- [ ] 实现 `StrReplaceEditorTool` 类
-- [ ] 支持文件读取、写入、编辑
+- [x] 实现 `StrReplaceEditorTool` 类
+- [x] 支持文件读取、写入、编辑
 - [ ] 实现文件内容搜索和替换
-- [ ] 支持多种文件格式处理
+- [x] 支持多种文件格式处理
 
 ### 2.6 数据分析和可视化工具
 
@@ -117,9 +117,9 @@
 
 ### 2.7 人机交互工具
 
-- [ ] 实现 `AskHumanTool` 类
-- [ ] 实现 `TerminateTool` 类
-- [ ] 实现 `CreateChatCompletionTool` 类
+- [x] 实现 `AskHumanTool` 类
+- [x] 实现 `TerminateTool` 类
+- [x] 实现 `CreateChatCompletionTool` 类
 
 ### 2.8 规划工具
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -16,7 +17,7 @@ namespace OpenManus.Tools.Core
 
         public CreateChatCompletionTool(Kernel kernel, ILogger<BaseTool> logger) : base(logger)
         {
-            _kernel = kernel ?? throw new System.ArgumentNullException(nameof(kernel));
+            _kernel = kernel ?? throw new ArgumentNullException(nameof(kernel));
 
             Parameters = new Dictionary<string, object>
             {
@@ -89,7 +90,7 @@ namespace OpenManus.Tools.Core
                 _logger.LogWarning("Messages format not yet fully implemented, using basic prompt mode");
                 return ToolResult.Failure("Messages format not yet implemented. Please use 'prompt' parameter.");
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating chat completion");
                 return ToolResult.Failure($"Failed to create chat completion: {ex.Message}");
