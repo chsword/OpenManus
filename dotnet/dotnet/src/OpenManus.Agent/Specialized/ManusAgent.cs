@@ -54,7 +54,7 @@ Current working directory: {0}";
             HttpClient? httpClient = null,
             IConfiguration? configuration = null,
             ILoggerFactory? loggerFactory = null)
-            : base(kernel, logger, CreateToolCollection(fileOperator, logger, httpClient, configuration, loggerFactory), name ?? "Manus",
+            : base(kernel, logger, CreateToolCollection(fileOperator, logger), name ?? "Manus",
                   description ?? "A versatile agent that can solve various tasks using multiple tools")
         {
             // Configure the agent
