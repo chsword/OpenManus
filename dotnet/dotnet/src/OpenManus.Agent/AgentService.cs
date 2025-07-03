@@ -56,23 +56,3 @@ namespace OpenManus.Agent
         }
     }
 }
-            {
-                throw new ArgumentException("Task description cannot be null or empty.", nameof(taskDescription));
-            }
-
-            var context = new ContextVariables();
-            context.Set("taskDescription", taskDescription);
-
-            try
-            {
-                var result = await _kernel.RunAsync("TaskExecutor", context);
-                return result.ToString();
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions appropriately
-                throw new OpenManusException("An error occurred while executing the task.", ex);
-            }
-        }
-    }
-}
