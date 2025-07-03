@@ -4,5 +4,11 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"github.copilot.chat.codeGeneration.instructions": [
+			{
+				"file": ".copilot-codeGeneration-instructions.md"
+			}
+		]
+	}
 }

@@ -2,11 +2,40 @@
 
 基于 Python 版与 .NET 版功能差异分析，以下是需要实现的功能清单。
 
+## 已完成的基础设施工作
+
+### ✅ 项目结构和基础架构
+
+- [x] 升级到 .NET 9.0 目标框架
+- [x] 集成 Microsoft.SemanticKernel 1.59.0
+- [x] 升级所有 NuGet 包到最新稳定版本
+- [x] 建立模块化项目结构（Core、Agent、Flow、Tools、Mcp、Console 等）
+- [x] 实现基础依赖注入和服务注册
+- [x] 集成 Serilog 日志记录系统
+- [x] 配置 JSON 配置管理
+- [x] 建立测试项目结构
+
+### ✅ 基础接口定义
+
+- [x] 实现 `IAgent` 接口和基础 `AgentService`
+- [x] 实现 `IFlowService` 接口和基础 `FlowService`
+- [x] 实现 `IToolService` 接口和基础 `ToolService`
+- [x] 实现 `IMcpService` 接口和基础 `McpService`
+- [x] 建立项目间引用关系
+
+### ✅ 构建和编译
+
+- [x] 修复所有 Semantic Kernel API 变更导致的编译错误
+- [x] 确保所有 src 项目能够成功编译
+- [x] 配置 Directory.Build.props 统一包管理
+- [x] 修复 System.CommandLine 2.0 API 变更问题
+
 ## 1. Agent 架构和类型实现
 
 ### 1.1 ReAct 框架实现
 
-- [ ] 实现 `IBaseAgent` 接口，包含状态管理、内存管理、步骤执行
+- [ ] 扩展 `IAgent` 接口，包含状态管理、内存管理、步骤执行
+- [ ] 实现 `IBaseAgent` 基础接口
 - [ ] 实现 `ReActAgent` 抽象类，提供 Think-Act 循环
 - [ ] 实现 `ToolCallAgent` 类，支持工具调用和执行
 - [ ] 添加 Agent 状态枚举（IDLE, RUNNING, FINISHED）
@@ -24,7 +53,8 @@
 
 ### 2.1 核心工具接口
 
-- [ ] 重构 `IToolService` 和 `ToolService`
+- [x] 建立基础 `IToolService` 接口
+- [x] 实现基础 `ToolService` 类（使用 Semantic Kernel）
 - [ ] 实现 `IBaseTool` 接口和 `BaseTool` 抽象类
 - [ ] 实现 `ToolCollection` 类用于工具管理
 - [ ] 实现 `ToolResult` 类统一工具返回结果
@@ -86,7 +116,8 @@
 
 ### 3.1 Flow 架构
 
-- [ ] 重构 `IFlowService` 接口
+- [x] 建立基础 `IFlowService` 接口
+- [x] 实现基础 `FlowService` 类
 - [ ] 实现 `BaseFlow` 抽象类
 - [ ] 支持多 Agent 管理和协作
 - [ ] 实现 Agent 动态分配机制
@@ -108,8 +139,9 @@
 
 ### 4.1 MCP 客户端实现
 
-- [ ] 重构 `IMcpService` 和 `McpService`
-- [ ] 实现 `MCPClients` 类
+- [x] 建立基础 `IMcpService` 接口
+- [x] 实现基础 `McpService` 类（使用 Semantic Kernel）
+- [ ] 实现完整的 `MCPClients` 类
 - [ ] 支持 SSE 传输方式
 - [ ] 支持 stdio 传输方式
 
@@ -133,36 +165,43 @@
 
 ### 5.2 启动模式
 
+- [x] 建立基础 Console 应用结构
+- [x] 实现基础命令行界面（FlowCommand、McpCommand）
 - [ ] 实现基础 Agent 运行模式
 - [ ] 实现 Flow 工作流运行模式
 - [ ] 实现 MCP 专用运行模式
-- [ ] 重构 Console 应用以支持多种模式
+- [ ] 扩展 Console 应用以支持多种模式
 
 ## 6. 基础设施改进
 
 ### 6.1 异步编程模型
 
-- [ ] 全面采用异步/等待模式
+- [x] 在所有接口中采用异步/等待模式
+- [x] 实现异步服务调用
 - [ ] 实现异步工具执行
 - [ ] 实现异步 Agent 运行
 
 ### 6.2 错误处理和日志
 
+- [x] 集成 Serilog 日志记录系统
+- [x] 在所有服务中实现基础错误处理
 - [ ] 实现统一的错误处理机制
 - [ ] 实现重试机制
-- [ ] 改进日志记录系统
 - [ ] 实现调试和追踪功能
 
 ### 6.3 依赖注入和服务注册
 
-- [ ] 实现依赖注入容器配置
-- [ ] 注册所有服务和工具
+- [x] 建立基础依赖注入容器配置
+- [x] 注册核心服务（Agent、Flow、Tool、Mcp）
+- [ ] 扩展服务注册到所有工具
 - [ ] 实现服务生命周期管理
 
 ## 7. 测试和质量保证
 
 ### 7.1 单元测试
 
+- [x] 建立测试项目结构（Core.Tests、Agent.Tests、Flow.Tests）
+- [x] 配置测试依赖（xunit、Moq、Microsoft.NET.Test.Sdk）
 - [ ] 为所有 Agent 类编写单元测试
 - [ ] 为所有 Tool 类编写单元测试
 - [ ] 为 Flow 系统编写单元测试
@@ -209,6 +248,22 @@
 - [ ] 支持容器化部署
 - [ ] 实现健康检查
 
+## 阶段进度总结
+
+### ✅ 已完成的基础阶段（约 30% 进度）
+
+1. **项目基础架构**：完成 .NET 9.0 升级、Semantic Kernel 集成、包管理
+2. **核心接口定义**：建立所有主要服务接口
+3. **项目结构**：完成模块化设计和项目间依赖
+4. **基础设施**：日志、配置、依赖注入基础实现
+5. **测试框架**：建立测试项目和依赖
+
+### 🚧 当前优先任务（下一步）
+
+1. **Agent 架构扩展**：实现 ReAct 框架和状态管理
+2. **工具系统**：实现 BaseTool 和 ToolCollection
+3. **核心工具**：文件操作、命令执行工具
+
 ## 优先级说明
 
 **高优先级（P0）**：
@@ -229,13 +284,19 @@
 - 高级 Flow 功能
 - 性能优化
 
-## 里程碑计划
+## 里程碑计划（更新）
 
-**阶段 1**：核心架构实现（4-6 周）
+**阶段 0**：基础设施建设（已完成 - 2-3 周）
 
-- 完成 Agent 架构
-- 实现基础工具
-- 建立 Flow 框架
+- ✅ 完成项目架构和依赖升级
+- ✅ 建立核心接口和服务
+- ✅ 配置构建和测试环境
+
+**阶段 1**：核心架构实现（当前阶段 - 4-6 周）
+
+- 完成 Agent 架构扩展
+- 实现基础工具系统
+- 建立完整的 Flow 框架
 
 **阶段 2**：工具生态扩展（6-8 周）
 
@@ -245,12 +306,12 @@
 
 **阶段 3**：高级功能和优化（4-6 周）
 
-- 实现 MCP 支持
+- 实现完整 MCP 支持
 - 数据分析功能
 - 性能优化和测试
 
-**总预计时间**：14-20 周
+**更新后总预计时间**：16-23 周（考虑已完成的基础工作）
 
 ---
 
-_注：此 TODO 清单基于 Python 版与 .NET 版功能差异分析生成，旨在将 .NET 版本功能对齐至 Python 版本水平。_
+_注：此 TODO 清单基于 Python 版与 .NET 版功能差异分析生成，旨在将 .NET 版本功能对齐至 Python 版本水平。已完成的基础设施工作包括：Semantic Kernel 1.59.0 集成、.NET 9.0 升级、全面包更新、项目结构建立和核心接口定义。_
