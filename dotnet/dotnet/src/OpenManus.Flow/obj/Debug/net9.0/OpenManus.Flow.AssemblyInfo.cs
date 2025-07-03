@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OpenManus.Flow")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+eda0016d21e8ffbb132f7e5ec79782209418b135")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+98a4f16f2fad493e2faa52f24a020ff538128dd3")]
 [assembly: System.Reflection.AssemblyProductAttribute("OpenManus.Flow")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OpenManus.Flow")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
