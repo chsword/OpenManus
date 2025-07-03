@@ -26,7 +26,7 @@ Always provide clear explanations of your actions and reasoning.";
         private const string DefaultNextStepPrompt = "Based on the current conversation and available tools, what should be the next step?";
 
         private readonly IChatCompletionService _chatService;
-        private readonly ToolCollection _toolCollection;
+        protected readonly ToolCollection _toolCollection;
         private readonly List<string> _specialToolNames;
 
         public override string? SystemPrompt { get; set; } = DefaultSystemPrompt;
