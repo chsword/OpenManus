@@ -1,0 +1,18 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Database=OpenManusDb;User Id=sa;Password=Your_password123;"
+  },
+  "SemanticKernel": {
+    "AlphaVersion": true,
+    "Endpoint": "https://api.semantickernel.example.com",
+    "ApiKey": "your-api-key-here"
+  },
+  "AllowedHosts": "*"
+}

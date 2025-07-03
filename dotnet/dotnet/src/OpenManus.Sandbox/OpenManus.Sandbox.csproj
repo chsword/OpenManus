@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>OpenManus.Sandbox</RootNamespace>
+    <AssemblyName>OpenManus.Sandbox</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenManus.Core\OpenManus.Core.csproj" />
+    <ProjectReference Include="..\OpenManus.Tools\OpenManus.Tools.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>OpenManus.Agent</RootNamespace>
+    <AssemblyName>OpenManus.Agent</AssemblyName>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenManus.Core\OpenManus.Core.csproj" />
+    <ProjectReference Include="..\OpenManus.Llm\OpenManus.Llm.csproj" />
+    <ProjectReference Include="..\OpenManus.Tools\OpenManus.Tools.csproj" />
+    <ProjectReference Include="..\OpenManus.Sandbox\OpenManus.Sandbox.csproj" />
+    <ProjectReference Include="..\OpenManus.Prompt\OpenManus.Prompt.csproj" />
+  </ItemGroup>
+
+</Project>

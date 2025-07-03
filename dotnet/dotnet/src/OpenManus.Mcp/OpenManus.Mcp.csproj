@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>OpenManus.Mcp</RootNamespace>
+    <AssemblyName>OpenManus.Mcp</AssemblyName>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenManus.Core\OpenManus.Core.csproj" />
+    <ProjectReference Include="..\OpenManus.Llm\OpenManus.Llm.csproj" />
+    <ProjectReference Include="..\OpenManus.Tools\OpenManus.Tools.csproj" />
+  </ItemGroup>
+
+</Project>
