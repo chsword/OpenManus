@@ -1,77 +1,41 @@
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using OpenManus.Core.Models;
+using Microsoft.SemanticKernel;
 
-namespace OpenManus.Tools.System
+namespace OpenManus.Tools.Plugins
 {
     /// <summary>
-    /// Tool for executing Python code with timeout and safety restrictions.
-    /// Note: Only print outputs are visible, function return values are not captured.
+    /// A Semantic Kernel plugin for executing Python code with timeout and safety restrictions.
     /// </summary>
-    public class PythonExecuteTool : BaseTool
+    public class PythonPlugin
     {
+        private readonly ILogger<PythonPlugin> _logger;
         private const int DefaultTimeoutSeconds = 30;
         private const string TempFilePrefix = "openmanus_python_";
 
-        public PythonExecuteTool(ILogger<BaseTool> logger) : base(logger)
+        public PythonPlugin(ILogger<PythonPlugin> logger)
         {
-            Parameters = new Dictionary<string, object>
-            {
-                ["type"] = "object",
-                ["properties"] = new Dictionary<string, object>
-                {
-                    ["code"] = new Dictionary<string, object>
-                    {
-                        ["type"] = "string",
-                        ["description"] = "The Python code to execute. Use print statements to see results."
-                    },
-                    ["timeout"] = new Dictionary<string, object>
-                    {
-                        ["type"] = "integer",
-                        ["description"] = "Timeout in seconds for code execution (default: 30)",
-                        ["default"] = DefaultTimeoutSeconds
-                    },
-                    ["working_directory"] = new Dictionary<string, object>
-                    {
-                        ["type"] = "string",
-                        ["description"] = "Working directory for code execution (optional)"
-                    }
-                },
-                ["required"] = new[] { "code" }
-            };
+            _logger = logger;
         }
 
-        /// <inheritdoc />
-        public override string Name => "python_execute";
-
-        /// <inheritdoc />
-        public override string Description =>
-            "Executes Python code with timeout and safety restrictions. " +
-            "Only print outputs are visible, function return values are not captured. " +
-            "Use print statements to see results. Code is executed in a temporary file.";
-
-        /// <inheritdoc />
-        protected override async Task<ToolResult> ExecuteCoreAsync(Dictionary<string, object>? parameters)
+        [KernelFunction, Description("Executes Python code with timeout and safety restrictions. Only print outputs are visible, function return values are not captured. Use print statements to see results.")]
+        public async Task<string> ExecutePythonAsync(
+            [Description("The Python code to execute. Use print statements to see results.")] string code,
+            [Description("Timeout in seconds for code execution (default: 30).")] int timeout = DefaultTimeoutSeconds,
+            [Description("Working directory for code execution (optional).")] string? workingDirectory = null)
         {
-            var code = GetParameter(parameters, "code", string.Empty);
             if (string.IsNullOrWhiteSpace(code))
             {
-                return ToolResult.Failure("Code parameter is required and cannot be empty");
+                return "Error: Code parameter is required and cannot be empty";
             }
 
-            var timeoutObj = GetParameter<object>(parameters, "timeout", DefaultTimeoutSeconds);
-            if (!int.TryParse(timeoutObj?.ToString(), out var timeout))
-            {
-                timeout = DefaultTimeoutSeconds;
-            }
-
-            var workingDirectory = GetParameter(parameters, "working_directory", Path.GetTempPath());
+            workingDirectory ??= Path.GetTempPath();
 
             _logger.LogInformation("🐍 Executing Python code (timeout: {Timeout}s)", timeout);
 
@@ -90,23 +54,23 @@ namespace OpenManus.Tools.System
                 if (result.exitCode == 0)
                 {
                     _logger.LogInformation("✅ Python code executed successfully");
-                    return ToolResult.Success(formattedResult);
                 }
                 else
                 {
                     _logger.LogWarning("⚠️ Python code execution failed with exit code {ExitCode}", result.exitCode);
-                    return ToolResult.Success(formattedResult); // Return success but include error info
                 }
+
+                return formattedResult;
             }
             catch (TimeoutException ex)
             {
                 _logger.LogError(ex, "⏱️ Python code execution timed out after {Timeout}s", timeout);
-                return ToolResult.Failure($"Python execution timed out after {timeout} seconds: {ex.Message}");
+                return $"Python execution timed out after {timeout} seconds: {ex.Message}";
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "💥 Error executing Python code");
-                return ToolResult.Failure($"Failed to execute Python code: {ex.Message}");
+                return $"Failed to execute Python code: {ex.Message}";
             }
             finally
             {

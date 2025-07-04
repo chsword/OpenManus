@@ -13,10 +13,7 @@ using OpenManus.Core.Models;
 using OpenManus.Core.Services;
 using OpenManus.Tools;
 using OpenManus.Tools.Core;
-using OpenManus.Tools.FileOperations;
-using OpenManus.Tools.FileSystem;
-using OpenManus.Tools.System;
-using OpenManus.Tools.Web;
+using OpenManus.Tools.Plugins;
 
 namespace OpenManus.Console
 {
@@ -52,35 +49,51 @@ namespace OpenManus.Console
         {
             logger.LogInformation("Setting up OpenManus components...");
 
-            // Create a basic kernel for demonstration
-            var kernel = Kernel.CreateBuilder()
-                .AddOpenAIChatCompletion("gpt-3.5-turbo", "your-api-key-here") // Replace with actual key
-                .Build();
+            // Create a kernel with plugins
+            var kernelBuilder = Kernel.CreateBuilder()
+                .AddOpenAIChatCompletion("gpt-3.5-turbo", "your-api-key-here"); // Replace with actual key
 
-            // Create tool manager and register tools
+            // Add plugin instances
+            var fileSystemPlugin = new FileSystemPlugin(serviceProvider.GetRequiredService<ILogger<FileSystemPlugin>>());
+            var shellPlugin = new ShellPlugin(serviceProvider.GetRequiredService<ILogger<ShellPlugin>>());
+            var pythonPlugin = new PythonPlugin(serviceProvider.GetRequiredService<ILogger<PythonPlugin>>());
+
+            kernelBuilder.Plugins.AddFromObject(fileSystemPlugin, "FileSystem");
+            kernelBuilder.Plugins.AddFromObject(shellPlugin, "Shell");
+            kernelBuilder.Plugins.AddFromObject(pythonPlugin, "Python");
+
+            var kernel = kernelBuilder.Build();
+
+            // Create tool manager for legacy tools and register remaining tools
             var toolManager = new ToolManager(serviceProvider.GetRequiredService<ILogger<ToolManager>>());
-            var fileOperator = new LocalFileOperator(serviceProvider.GetRequiredService<ILogger<LocalFileOperator>>());
 
-            // Register various tools
+            // Register non-plugin tools
             toolManager.RegisterTool(new TerminateTool(serviceProvider.GetRequiredService<ILogger<BaseTool>>()));
             toolManager.RegisterTool(new AskHumanTool(serviceProvider.GetRequiredService<ILogger<BaseTool>>()));
             toolManager.RegisterTool(new CreateChatCompletionTool(kernel, serviceProvider.GetRequiredService<ILogger<BaseTool>>()));
-            toolManager.RegisterTool(new BashTool(fileOperator, serviceProvider.GetRequiredService<ILogger<BaseTool>>()));
-            toolManager.RegisterTool(new PythonExecuteTool(fileOperator, serviceProvider.GetRequiredService<ILogger<BaseTool>>()));
-            toolManager.RegisterTool(new FileOperationsTool(fileOperator, serviceProvider.GetRequiredService<ILogger<BaseTool>>()));
-            // Skip WebSearchTool for now as it requires additional dependencies
-            // toolManager.RegisterTool(new WebSearchTool(...));
 
-            logger.LogInformation("Registered {ToolCount} tools: {Tools}",
+            logger.LogInformation("Registered {ToolCount} legacy tools: {Tools}",
                 toolManager.ToolCount,
                 string.Join(", ", toolManager.GetAvailableTools()));
 
-            // Demo 1: List available tools
+            // Demo 1: List available tools and plugins
             System.Console.WriteLine("📋 Available Tools:");
+
+            // Show legacy tools
             foreach (var toolName in toolManager.GetAvailableTools())
             {
                 var toolInfo = toolManager.GetToolInfo(toolName);
                 System.Console.WriteLine($"  • {toolName}: {toolInfo?.Description}");
+            }
+
+            // Show plugins
+            foreach (var plugin in kernel.Plugins)
+            {
+                System.Console.WriteLine($"  • Plugin '{plugin.Name}' with {plugin.FunctionCount} functions");
+                foreach (var function in plugin)
+                {
+                    System.Console.WriteLine($"    - {function.Name}: {function.Description}");
+                }
             }
             System.Console.WriteLine();
 
@@ -126,48 +139,49 @@ namespace OpenManus.Console
 
             System.Console.WriteLine();
 
-            // Demo 4: File operations
-            System.Console.WriteLine("📁 Demo: File Operations Tool");
+            // Demo 4: File operations using FileSystemPlugin
+            System.Console.WriteLine("📁 Demo: File Operations Plugin");
             try
             {
                 var testFilePath = Path.Combine(Path.GetTempPath(), "openmanus_test.txt");
-                var testContent = "Hello from OpenManus!\nThis is a test file created by the FileOperations tool.";
+                var testContent = "Hello from OpenManus!\nThis is a test file created by the FileSystem plugin.";
 
-                // Create file
-                var createResult = await toolManager.ExecuteToolAsync("file_operations", new Dictionary<string, object>
+                // Create file using plugin
+                var writeFunction = kernel.Plugins["FileSystem"]["WriteFileAsync"];
+                var writeResult = await kernel.InvokeAsync(writeFunction, new KernelArguments
                 {
-                    ["operation"] = "write",
                     ["path"] = testFilePath,
                     ["content"] = testContent
                 });
 
-                System.Console.WriteLine($"Create file: {(createResult.IsSuccess() ? "✅ Success" : "❌ Failed")}");
+                System.Console.WriteLine($"Create file: ✅ Success");
+                System.Console.WriteLine($"Output: {writeResult.GetValue<string>()}");
 
-                if (createResult.IsSuccess())
+                // Read file using plugin
+                var readFunction = kernel.Plugins["FileSystem"]["ReadFileAsync"];
+                var readResult = await kernel.InvokeAsync(readFunction, new KernelArguments
                 {
-                    // Read file
-                    var readResult = await toolManager.ExecuteToolAsync("file_operations", new Dictionary<string, object>
-                    {
-                        ["operation"] = "read",
-                        ["path"] = testFilePath
-                    });
+                    ["path"] = testFilePath
+                });
 
-                    System.Console.WriteLine($"Read file: {(readResult.IsSuccess() ? "✅ Success" : "❌ Failed")}");
+                System.Console.WriteLine($"Read file: ✅ Success");
+                var content = readResult.GetValue<string>();
+                System.Console.WriteLine($"Content preview: {(content?.Length > 50 ? content.Substring(0, 50) + "..." : content)}");
 
-                    // Clean up
-                    try { File.Delete(testFilePath); } catch { }
-                }
+                // Clean up
+                try { File.Delete(testFilePath); } catch { }
             }
             catch (Exception ex)
             {
                 logger.LogWarning(ex, "File operations demo failed");
                 System.Console.WriteLine("⚠️ File operations demo failed");
+                System.Console.WriteLine($"   Error: {ex.Message}");
             }
 
             System.Console.WriteLine();
 
-            // Demo 5: Python execution (if Python is available)
-            System.Console.WriteLine("🐍 Demo: Python Execution Tool");
+            // Demo 5: Python execution using PythonPlugin
+            System.Console.WriteLine("🐍 Demo: Python Execution Plugin");
             try
             {
                 var pythonCode = @"
@@ -177,22 +191,22 @@ import sys
 print(f'Python version: {sys.version_info.major}.{sys.version_info.minor}')
 ";
 
-                var pythonResult = await toolManager.ExecuteToolAsync("python_execute", new Dictionary<string, object>
+                var pythonFunction = kernel.Plugins["Python"]["ExecutePythonAsync"];
+                var pythonResult = await kernel.InvokeAsync(pythonFunction, new KernelArguments
                 {
                     ["code"] = pythonCode,
                     ["timeout"] = 10
                 });
 
-                System.Console.WriteLine($"Python execution: {(pythonResult.IsSuccess() ? "✅ Success" : "❌ Failed")}");
-                if (!pythonResult.IsSuccess())
-                {
-                    System.Console.WriteLine($"Error: {pythonResult.ErrorMessage()}");
-                }
+                System.Console.WriteLine($"Python execution: ✅ Success");
+                var output = pythonResult.GetValue<string>();
+                System.Console.WriteLine($"Output preview: {(output?.Length > 100 ? output.Substring(0, 100) + "..." : output)}");
             }
             catch (Exception ex)
             {
                 logger.LogWarning(ex, "Python execution demo failed");
                 System.Console.WriteLine("⚠️ Python execution demo failed (Python may not be installed)");
+                System.Console.WriteLine($"   Error: {ex.Message}");
             }
 
             System.Console.WriteLine("\n🎉 Demo completed!");
@@ -204,7 +218,6 @@ print(f'Python version: {sys.version_info.major}.{sys.version_info.minor}')
                 {
                     // Register core services
                     services.AddScoped<IToolManager, ToolManager>();
-                    services.AddScoped<IFileOperator, LocalFileOperator>();
 
                     // Register logging
                     services.AddLogging(builder =>
