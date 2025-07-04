@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 > nul
 REM OpenManus .NET 项目编译脚本
 REM 编译所有 OpenManus 项目
 
@@ -11,7 +12,6 @@ REM 检查是否存在 dotnet CLI
 where dotnet >nul 2>nul
 if %ERRORLEVEL% neq 0 (
     echo 错误: 未找到 dotnet CLI。请安装 .NET SDK。
-    pause
     exit /b 1
 )
 
@@ -81,7 +81,6 @@ echo - OpenManus.Sandbox
 echo - OpenManus.Prompt
 echo - OpenManus.Console
 echo.
-pause
 exit /b 0
 
 :error
@@ -91,5 +90,4 @@ echo          编译失败！
 echo ========================================
 echo 请检查错误信息并修复后重试。
 echo.
-pause
 exit /b 1

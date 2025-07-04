@@ -5,12 +5,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using OpenManus.Tools.Web.Engines;
 using OpenManus.Tools.Web.Models;
+using OpenManus.Core.Models;
 
 namespace OpenManus.Tools.Web
 {
@@ -23,19 +25,17 @@ namespace OpenManus.Tools.Web
     {
         private readonly WebSearchEngineFactory _engineFactory;
         private readonly HttpClient _httpClient;
-        private readonly ILogger<WebSearchTool> _logger;
         private readonly List<string> _fallbackEngines;
 
         public override string Name => "web_search";
         public override string Description => "Search the web for information using various search engines";
 
         public WebSearchTool(
-            ILogger<WebSearchTool> logger,
+            ILogger<BaseTool> logger,
             HttpClient httpClient,
             ILoggerFactory loggerFactory,
             IConfiguration configuration) : base(logger)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _engineFactory = new WebSearchEngineFactory(httpClient, loggerFactory, configuration);
 
@@ -69,7 +69,7 @@ namespace OpenManus.Tools.Web
 
                 if (string.IsNullOrWhiteSpace(query))
                 {
-                    return CreateErrorResult("Search query cannot be empty");
+                    return ToolResult.Failure("Search query cannot be empty");
                 }
 
                 // Validate and clamp numResults
@@ -83,7 +83,7 @@ namespace OpenManus.Tools.Web
 
                 if (!searchResponse.IsSuccess)
                 {
-                    return CreateErrorResult($"Search failed: {searchResponse.ErrorMessage}");
+                    return ToolResult.Failure($"Search failed: {searchResponse.ErrorMessage}");
                 }
 
                 // Fetch content from URLs if requested
@@ -103,20 +103,12 @@ namespace OpenManus.Tools.Web
                 _logger.LogInformation("Web search completed successfully. Found {ResultCount} results in {Duration}ms",
                     searchResponse.Results.Count, stopwatch.ElapsedMilliseconds);
 
-                return CreateSuccessResult(formattedResult, new Dictionary<string, object>
-                {
-                    ["query"] = query,
-                    ["numResults"] = searchResponse.Results.Count,
-                    ["searchEngine"] = searchResponse.Metadata?.SearchEngine ?? "unknown",
-                    ["duration"] = stopwatch.ElapsedMilliseconds,
-                    ["language"] = language,
-                    ["country"] = country
-                });
+                return ToolResult.Success(formattedResult);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error performing web search for query: {Query}", query);
-                return CreateErrorResult($"Search error: {ex.Message}");
+                return ToolResult.Failure($"Search error: {ex.Message}");
             }
         }
 
@@ -125,7 +117,7 @@ namespace OpenManus.Tools.Web
         /// </summary>
         [KernelFunction]
         [Description("Get information about available search engines")]
-        public async Task<ToolResult> GetAvailableEnginesAsync()
+        public Task<ToolResult> GetAvailableEnginesAsync()
         {
             try
             {
@@ -141,17 +133,28 @@ namespace OpenManus.Tools.Web
 
                 var result = JsonSerializer.Serialize(engineInfo, new JsonSerializerOptions { WriteIndented = true });
 
-                return CreateSuccessResult(result, new Dictionary<string, object>
-                {
-                    ["engineCount"] = engines.Count,
-                    ["configuredEngines"] = engines.Count(e => e.IsConfigured)
-                });
+                return Task.FromResult(ToolResult.Success(result));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting available search engines");
-                return CreateErrorResult($"Error getting engines: {ex.Message}");
+                return Task.FromResult(ToolResult.Failure($"Error getting engines: {ex.Message}"));
             }
+        }
+
+        /// <summary>
+        /// Core execution method required by BaseTool
+        /// </summary>
+        protected override async Task<ToolResult> ExecuteCoreAsync(Dictionary<string, object>? parameters)
+        {
+            var query = GetParameter<string>(parameters, "query", "");
+            var numResults = GetParameter<int>(parameters, "numResults", 10);
+            var language = GetParameter<string>(parameters, "language", "en");
+            var country = GetParameter<string>(parameters, "country", "us");
+            var preferredEngine = GetParameter<string?>(parameters, "preferredEngine", null);
+            var fetchContent = GetParameter<bool>(parameters, "fetchContent", false);
+
+            return await SearchAsync(query, numResults, language, country, preferredEngine, fetchContent);
         }
 
         private async Task<SearchResponse> PerformSearchWithFallbackAsync(
@@ -265,8 +268,8 @@ namespace OpenManus.Tools.Web
 
             // Simple HTML tag removal (for basic content extraction)
             // In production, you might want to use HtmlAgilityPack
-            var text = System.Text.RegularExpressions.Regex.Replace(html, @"<[^>]+>", " ");
-            text = System.Text.RegularExpressions.Regex.Replace(text, @"\s+", " ");
+            var text = Regex.Replace(html, @"<[^>]+>", " ");
+            text = Regex.Replace(text, @"\s+", " ");
             return text.Trim();
         }
     }
