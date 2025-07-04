@@ -19,8 +19,8 @@ namespace OpenManus.Core.Services
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Generated response text</returns>
         Task<string> GenerateResponseAsync(
-            IList<Message> messages, 
-            double temperature = 0.7, 
+            IList<Message> messages,
+            double temperature = 0.7,
             int? maxTokens = null,
             CancellationToken cancellationToken = default);
 

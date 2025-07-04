@@ -148,4 +148,34 @@ namespace OpenManus.Core.Models
             Error = error;
         }
     }
+
+    /// <summary>
+    /// Extension methods for ToolResult
+    /// </summary>
+    public static class ToolResultExtensions
+    {
+        /// <summary>
+        /// Indicates if the tool execution was successful (no error)
+        /// </summary>
+        public static bool IsSuccess(this ToolResult result)
+        {
+            return string.IsNullOrEmpty(result.Error);
+        }
+
+        /// <summary>
+        /// Gets the error message if any
+        /// </summary>
+        public static string? ErrorMessage(this ToolResult result)
+        {
+            return result.Error;
+        }
+
+        /// <summary>
+        /// Gets the result output as string
+        /// </summary>
+        public static string? Result(this ToolResult result)
+        {
+            return result.Output?.ToString();
+        }
+    }
 }
