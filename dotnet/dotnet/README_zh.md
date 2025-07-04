@@ -5,6 +5,7 @@
 ## 项目结构
 
 - **src**: 包含所有源代码和项目文件。
+
   - **OpenManus.Core**: 核心库，包含数据模型、异常处理、配置和日志服务。
   - **OpenManus.Agent**: 代理服务，定义代理接口和实现。
   - **OpenManus.Flow**: 流程服务，管理流程相关的功能。
@@ -26,16 +27,19 @@
 ## 安装和使用
 
 1. 克隆该项目到本地：
+
    ```
    git clone https://github.com/FoundationAgents/OpenManus.git
    ```
 
 2. 进入项目目录：
+
    ```
    cd OpenManus/dotnet
    ```
 
 3. 使用 .NET CLI 构建项目：
+
    ```
    dotnet build
    ```
@@ -54,3 +58,22 @@
 该项目采用 MIT 许可证，详细信息请查看 [LICENSE](LICENSE) 文件。
 
 感谢您使用 OpenManus 项目！如有任何问题，请随时联系开发团队。
+
+## 技术规范
+
+### 1. 依赖管理
+
+```xml
+<!-- 核心依赖版本 -->
+<PackageReference Include="Microsoft.SemanticKernel" Version="1.59.0" />
+<!-- 其他依赖使用最新稳定版 -->
+```
+
+### 2. 工具实现规范 (新增)
+
+- **插件优先**: 如果一个工具的功能可以合理地封装成一个 Semantic Kernel 插件，应优先实现为插件，而不是一个独立的 `IBaseTool`。
+- **插件设计**: 插件应遵循 SK 的设计原则，保持功能内聚和可重用性。
+
+### 3. 服务注册
+
+服务注册应在 `OpenManus.Core` 中进行，确保所有服务在应用启动时正确注册。
