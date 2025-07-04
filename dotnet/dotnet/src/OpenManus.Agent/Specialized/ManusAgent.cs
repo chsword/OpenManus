@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using OpenManus.Agent.Specialized;
+using OpenManus.Core.Models;
 using OpenManus.Tools;
 using OpenManus.Tools.Core;
 using OpenManus.Tools.FileOperations;
@@ -114,7 +115,7 @@ Current working directory: {0}";
 
             try
             {
-                var result = await base.RunAsync(request);
+                var result = await base.RunAsync(request ?? string.Empty);
                 _logger.LogInformation("✅ Manus agent completed task successfully");
                 return result;
             }

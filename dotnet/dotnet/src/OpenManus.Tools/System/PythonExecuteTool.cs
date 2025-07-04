@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OpenManus.Core.Models;
@@ -153,8 +155,8 @@ namespace OpenManus.Tools.System
 
             using var process = new Process { StartInfo = processStartInfo };
 
-            var outputBuilder = new System.Text.StringBuilder();
-            var errorBuilder = new System.Text.StringBuilder();
+            var outputBuilder = new StringBuilder();
+            var errorBuilder = new StringBuilder();
 
             process.OutputDataReceived += (sender, e) =>
             {

@@ -24,7 +24,7 @@ namespace OpenManus.Core.Configuration
             return config;
         }
 
-        public string GetValue(string key)
+        public string? GetValue(string key)
         {
             return _configuration[key];
         }

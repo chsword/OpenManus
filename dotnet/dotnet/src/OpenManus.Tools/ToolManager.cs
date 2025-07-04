@@ -112,13 +112,13 @@ namespace OpenManus.Tools
                 _logger.LogInformation("🚀 Executing tool: {ToolName}", toolName);
                 var result = await tool.ExecuteAsync(parameters);
 
-                if (result.IsSuccess)
+                if (result.IsSuccess())
                 {
                     _logger.LogInformation("✅ Tool executed successfully: {ToolName}", toolName);
                 }
                 else
                 {
-                    _logger.LogWarning("⚠️ Tool execution failed: {ToolName} - {Error}", toolName, result.ErrorMessage);
+                    _logger.LogWarning("⚠️ Tool execution failed: {ToolName} - {Error}", toolName, result.ErrorMessage());
                 }
 
                 return result;
