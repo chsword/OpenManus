@@ -24,7 +24,7 @@ namespace OpenManus.Tools.Plugins
             _logger = logger;
         }
 
-        [KernelFunction, Description("Executes Python code with timeout and safety restrictions. Only print outputs are visible, function return values are not captured. Use print statements to see results.")]
+        [KernelFunction("ExecutePython"), Description("Executes Python code with timeout and safety restrictions. Only print outputs are visible, function return values are not captured. Use print statements to see results.")]
         public async Task<string> ExecutePythonAsync(
             [Description("The Python code to execute. Use print statements to see results.")] string code,
             [Description("Timeout in seconds for code execution (default: 30).")] int timeout = DefaultTimeoutSeconds,

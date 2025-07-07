@@ -93,7 +93,7 @@ namespace OpenManus.Tools
         /// <param name="key">Parameter key</param>
         /// <param name="defaultValue">Default value if parameter not found</param>
         /// <returns>Parameter value or default</returns>
-        protected T GetParameter<T>(Dictionary<string, object>? parameters, string key, T defaultValue = default(T))
+        public T GetParameter<T>(Dictionary<string, object>? parameters, string key, T defaultValue = default!)
         {
             if (parameters == null || !parameters.TryGetValue(key, out var value))
                 return defaultValue;
@@ -119,7 +119,7 @@ namespace OpenManus.Tools
         /// <param name="parameters">Parameters dictionary</param>
         /// <param name="requiredKeys">Required parameter keys</param>
         /// <exception cref="ArgumentException">Thrown when required parameters are missing</exception>
-        protected void ValidateRequiredParameters(Dictionary<string, object>? parameters, params string[] requiredKeys)
+        public void ValidateRequiredParameters(Dictionary<string, object>? parameters, params string[] requiredKeys)
         {
             if (parameters == null && requiredKeys.Length > 0)
                 throw new ArgumentException($"Required parameters missing: {string.Join(", ", requiredKeys)}");

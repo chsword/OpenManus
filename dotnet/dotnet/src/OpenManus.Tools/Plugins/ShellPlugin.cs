@@ -21,7 +21,7 @@ namespace OpenManus.Tools.Plugins
             _logger = logger;
         }
 
-        [KernelFunction, Description("Executes a shell command and returns the output. On Windows, this uses PowerShell. On Unix systems, this uses bash.")]
+        [KernelFunction("ExecuteCommand"), Description("Executes a shell command and returns the output. On Windows, this uses PowerShell. On Unix systems, this uses bash.")]
         public async Task<string> ExecuteCommandAsync(
             [Description("The shell command to execute.")] string command,
             [Description("Timeout in seconds for command execution (default: 30).")] int timeout = 30,

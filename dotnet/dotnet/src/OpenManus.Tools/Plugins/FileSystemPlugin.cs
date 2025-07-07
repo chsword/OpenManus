@@ -21,7 +21,7 @@ namespace OpenManus.Tools.Plugins
             _logger = logger;
         }
 
-        [KernelFunction, Description("Reads the entire content of a specified file.")]
+        [KernelFunction("ReadFile"), Description("Reads the entire content of a specified file.")]
         public async Task<string> ReadFileAsync(
             [Description("The absolute path of the file to read.")] string path)
         {
@@ -42,7 +42,7 @@ namespace OpenManus.Tools.Plugins
             }
         }
 
-        [KernelFunction, Description("Writes the given content to a specified file. This will create the file if it does not exist, or overwrite it if it does.")]
+        [KernelFunction("WriteFile"), Description("Writes the given content to a specified file. This will create the file if it does not exist, or overwrite it if it does.")]
         public async Task<string> WriteFileAsync(
             [Description("The absolute path of the file to write to.")] string path,
             [Description("The content to write to the file.")] string content)
@@ -65,7 +65,7 @@ namespace OpenManus.Tools.Plugins
             }
         }
 
-        [KernelFunction, Description("Lists the files and subdirectories in a specified directory.")]
+        [KernelFunction("ListDirectory"), Description("Lists the files and subdirectories in a specified directory.")]
         public string ListDirectory(
             [Description("The absolute path of the directory to list the contents of.")] string path)
         {

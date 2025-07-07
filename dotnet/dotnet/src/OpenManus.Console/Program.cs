@@ -147,7 +147,7 @@ namespace OpenManus.Console
                 var testContent = "Hello from OpenManus!\nThis is a test file created by the FileSystem plugin.";
 
                 // Create file using plugin
-                var writeFunction = kernel.Plugins["FileSystem"]["WriteFileAsync"];
+                var writeFunction = kernel.Plugins["FileSystem"]["WriteFile"];
                 var writeResult = await kernel.InvokeAsync(writeFunction, new KernelArguments
                 {
                     ["path"] = testFilePath,
@@ -158,7 +158,7 @@ namespace OpenManus.Console
                 System.Console.WriteLine($"Output: {writeResult.GetValue<string>()}");
 
                 // Read file using plugin
-                var readFunction = kernel.Plugins["FileSystem"]["ReadFileAsync"];
+                var readFunction = kernel.Plugins["FileSystem"]["ReadFile"];
                 var readResult = await kernel.InvokeAsync(readFunction, new KernelArguments
                 {
                     ["path"] = testFilePath
@@ -191,7 +191,7 @@ import sys
 print(f'Python version: {sys.version_info.major}.{sys.version_info.minor}')
 ";
 
-                var pythonFunction = kernel.Plugins["Python"]["ExecutePythonAsync"];
+                var pythonFunction = kernel.Plugins["Python"]["ExecutePython"];
                 var pythonResult = await kernel.InvokeAsync(pythonFunction, new KernelArguments
                 {
                     ["code"] = pythonCode,
